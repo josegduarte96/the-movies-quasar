@@ -13,6 +13,7 @@
     </div>
     <!-- container movies -->
     <div class="container-sm font p-1" style="100vh">
+      <FavoritesMovies :breakpoints="breakpoints" :moviesFavorites="moviesFav"/>
       <PopularMovies :breakpoints="breakpoints" :moviesPopulars="moviesPopulars"/>
       <TopRatedMovies :breakpoints="breakpoints" :moviesRated="moviesRated"/>
       <UpComingMovies :breakpoints="breakpoints" :moviesUpcoming="moviesUpcoming"/>
@@ -23,9 +24,7 @@
       <q-scroll-observer @scroll="onScroll"/>
     <div class="full-width row wrap justify-end items-center content-start" style="height: 60px">
       <div style="overflow: auto; min-height: 80px; max-height: 70px;" class="q-gutter-sm m-1 col-auto self-end">
-        <q-btn @click="signip" color="primary" class="text-bold" label="Entrar"  />
-        <q-btn @click="signup" color="primary" class="text-bold" label="Registrarse" />
-        <!-- <q-btn v-if="userStatus != 'authenticating'" @click="closeSesion"  color="primary" class="text-bold" label="Cerrar Sesion" /> -->
+        <q-btn @click="closeSesion"  color="primary" class="text-bold" label="Cerrar Sesion" />
       </div>
     </div>
     </q-page-sticky>
@@ -41,17 +40,19 @@ import { useRouter } from 'vue-router'
 import PopularMovies from '../components/PopularMovies.vue'
 import TopRatedMovies from '../components/TopRatedMovies.vue'
 import UpComingMovies from '../components/UpComingMovies.vue'
+import FavoritesMovies from '../components/FavoritesMovies.vue'
+import useAuth from 'src/modules/auth/composables/useAuth'
 
 
 export default defineComponent({
-  components: { PopularMovies, TopRatedMovies, UpComingMovies },
+  components: { PopularMovies, TopRatedMovies, UpComingMovies, FavoritesMovies },
   name: 'MainLayout',
   setup () {
     const $q = useQuasar()
     $q.addressbarColor.set('#5031a9')
     
     //  composables
-  //  const { logout, setMovieFav, moviesFavorites, removeFavorites } = useAuth()
+   const { moviesFavorites } = useAuth()
    const { getMovies } = useMovies()
     // constantes
     const store = useStore()
@@ -71,18 +72,20 @@ export default defineComponent({
     // methods
     onMounted( async() => {
       await getMovies()
+      await moviesFavorites()
     })
     
-    // const closeSesion = async() => {
-    //   $q.loading.show({
-    //     customClass: 'bg-primary'
-    //   })
-    //   setTimeout(() => {
-    //     logout()
-    //     $q.loading.hide()
-    //     router.push('/sign-ip')
-    //   }, 3000);
-    // }
+    const closeSesion = () => {
+      console.log('d')
+      store.commit('auth/logout')
+      $q.loading.show({
+        customClass: 'bg-primary'
+      })
+      setTimeout(() => {
+        router.push('/')
+        $q.loading.hide()
+      }, 1500)
+    }
     
     // const addFavorite = async(idMovie) => {
     //   if(userStatus.value != 'authenticated') {
@@ -146,14 +149,14 @@ export default defineComponent({
     
     
     return {
+      moviesFav: computed(() => store.getters['auth/userFav']),
       moviesPopulars: computed(() => store.getters['movies/getPopularsMovies']),
       moviesRated: computed(() => store.getters['movies/getMostRatedMovies']),
       moviesUpcoming: computed(() => store.getters['movies/getUpcomingMovies']),
       breakpoints,
       onScroll,     
       scrollInfo,
-      signip: () => router.push('/sign-ip'),
-      signup: () => router.push('/sign-up'),
+      closeSesion
     }
   }
 })

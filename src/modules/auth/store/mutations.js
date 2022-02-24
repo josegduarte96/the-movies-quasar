@@ -16,6 +16,10 @@ export const moviesFavs = (state, movies) => {
     state.moviesFav = movies
 }
 
+export const addNewFav = (state, movie) => {
+    state.moviesFav = [...state.moviesFav, movie]
+}
+
 export const removeFavMovie = (state, idMovie) => {
     state.moviesFav = state.moviesFav.filter(movie => movie.id != idMovie)
 }

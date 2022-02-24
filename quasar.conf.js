@@ -88,7 +88,7 @@ module.exports = configure(function (ctx) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
-      plugins: ['Notify', 'Loading', 'AddressbarColor'],
+      plugins: ['Notify', 'Loading', 'AddressbarColor', 'Dialog'],
       config: {
         brand: {
           primary: '#5031a9',

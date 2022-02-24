@@ -1,5 +1,6 @@
 import xepelinApi from '../../../api/xepelinApi'
 import tmdbApi from '../../../api/tmdbApi'
+import { store } from 'quasar/wrappers'
 // import { loginUser } from './mutations'
 
 
@@ -47,8 +48,8 @@ export const addMovieFav = async({commit}, idMovie) => {
             }
        })
        const { data } = await tmdbApi.get('movie/' + idMovie)
-
-       return {ok: true, data}
+       commit('addNewFav', data)
+       return {ok: true}
     } catch (error) {
         return {ok: false, message: error.response.data.message}
     }

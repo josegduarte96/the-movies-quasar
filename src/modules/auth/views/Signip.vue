@@ -80,7 +80,8 @@ setup(){
               timeout: 3000
               })
             } else {
-              return router.push('/')
+              $q.loading.hide()
+              return router.push('/logged')
             }
           }, 5500)
         }

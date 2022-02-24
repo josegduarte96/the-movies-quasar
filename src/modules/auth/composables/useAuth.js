@@ -22,7 +22,6 @@ const useAuth = () => {
 
    const setMovieFav = async(idMovie) => {
        const resp = await store.dispatch('auth/addMovieFav', idMovie)
-    //    if(resp.ok) await store.dispatch('auth/getMovieDetails', idMovie)
        return resp
    }
 
@@ -41,25 +40,22 @@ const useAuth = () => {
                
            }           
        }
-       return {ok: true, allMoviesFav}
+       store.commit('auth/moviesFavs', allMoviesFav)
+       return {ok: true}
    }
 
    const removeFavorites = async(idMovie) => {
     const resp = await store.dispatch('auth/removeFavorites', idMovie)
     return resp
    }
-
-   const logout = () => {
-       store.commit('auth/logout')
-   }
+   
     return {
         createUser,
         signInUser,
         checkAuth,
         setMovieFav,
         removeFavorites,
-        moviesFavorites,
-        logout
+        moviesFavorites
     }
 }
 

@@ -2,6 +2,7 @@ import { route } from 'quasar/wrappers'
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
 import routes from './routes'
 
+
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -11,7 +12,7 @@ import routes from './routes'
  * with the Router instance.
  */
 
-export default route(function (/* { store, ssrContext } */) {
+export default route(function ({ store }/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory)
@@ -24,6 +25,20 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE)
+  })
+
+  Router.beforeEach(async(to, from, next) => {
+    let ok
+    await store.dispatch('auth/checkAuthStatus')
+      .then(() => {
+        ok = store.state.auth.status == 'authenticated' ? true : false
+      })
+      .catch(() => {
+        ok = false
+      })
+    if(ok && to.path == '/') next({name: 'home'})
+    else if(!ok && to.path != '/') return next()
+    else next()
   })
 
   return Router

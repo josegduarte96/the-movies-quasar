@@ -1,4 +1,11 @@
+// import isAuthGuard from 'src/modules/auth/router/authGuard'
+
+import isAuthGuard from 'src/modules/auth/router/authGuard'
 import Login from '../modules/auth/router/index'
+
+
+
+
 const routes = [
   {
     path: '/',
@@ -7,6 +14,12 @@ const routes = [
   {
     path: '/login',
     ...Login
+  },
+  {
+    path: '/logged',
+    beforeEnter: [isAuthGuard],
+    name: 'home',
+    component: () => import('layouts/LoginHome.vue')
   },
 
   // Always leave this as last one,
