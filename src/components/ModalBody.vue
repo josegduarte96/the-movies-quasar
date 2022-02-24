@@ -78,7 +78,7 @@ export default {
               icon: 'las la-times',
               position: 'top',
               color: 'negative',
-              message: msg || 'Oops no pudimos agregarla a tu lista de favoritas.'
+              message: msg || 'Oops, primero debes ingresar a tu cuenta.'
             })
           }
           }, 3000);
